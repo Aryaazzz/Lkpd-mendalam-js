@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Form Pendaftaran Modern</title>
+<style>
+:root {
+    --bg-light: #f5f5f5;
+    --text-light: #222;
+    --card-light: #ffffff;
+
+    --bg-dark: #121212;
+    --text-dark: #eeeeee;
+    --card-dark: #1e1e1e;
+
+    --primary: #4a90e2;
+    --primary-hover: #3a78c5;
+    --error: #e25a4a;
+    --success: #4ae27f;
+
+    --radius: 8px;
+    --transition: 0.25s ease;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    margin: 0;
+    padding: 40px;
+    transition: background var(--transition), color var(--transition);
+}
+
+body.dark {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: var(--card-light);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: background var(--transition);
+}
+
+body.dark .container {
+    background: var(--card-dark);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: var(--radius);
+    border: 1px solid #ccc;
+    transition: border var(--transition), transform var(--transition);
+}
+
+input:focus {
+    border: 1px solid var(--primary);
+    transform: scale(1.02);
+    outline: none;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: var(--primary);
+    border: none;
+    color: white;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+}
+
+button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.mode-toggle {
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+    opacity: 0.7;
+    user-select: none;
+}
+
+.feedback {
+    margin-top: 10px;
+    font-size: 14px;
+    min-height: 22px;
+}
+
+
+.checkmark {
+    color: var(--success);
+    font-size: 20px;
+    margin-right: 5px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Form Pendaftaran</h2>
+
+    <label>Nama Lengkap</label>
+    <input type="text" id="nama" placeholder="Masukkan nama">
+
+    <label>Email</label>
+    <input type="email" id="email" placeholder="Masukkan email">
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Minimal 8 karakter">
+
+    <div class="feedback" id="feedback"></div>
+
+    <button type="button" id="daftarBtn">Daftar</button>
+
+    <div class="mode-toggle" id="modeToggle">🌙 Dark / Light Mode</div>
+</div>
+
+<script>
+let darkMode = false;
+const errorList = [];
+
+function validasi() {
+    errorList.length = 0;
+    const nama = document.getElementById("nama").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (nama.length < 3) errorList.push("Nama terlalu pendek.");
+    if (!email.includes("@") || !email.includes(".")) errorList.push("Email tidak valid.");
+    if (password.length < 8) errorList.push("Password minimal 8 karakter.");
+
+    return errorList.length === 0;
+}
+
+function tampilFeedback(sukses=false) {
+    const feedback = document.getElementById("feedback");
+    if (!sukses && errorList.length > 0) {
+        let pesan = "<span style='color: var(--error);'>Terdapat kesalahan:</span><ul>";
+        for (let i = 0; i < errorList.length; i++) {
+            pesan += `<li>${errorList[i]}</li>`;
+        }
+        pesan += "</ul>";
+        feedback.innerHTML = pesan;
+    } else if (sukses) {
+        feedback.innerHTML = "<span class='checkmark'>✔</span><span style='color: var(--success);'>Berhasil daftar!</span>";
+    } else {
+        feedback.innerHTML = "";
+    }
+}
+
+
+document.getElementById("daftarBtn").addEventListener("click", function() {
+    if (validasi()) {
+        tampilFeedback(true); 
+    } else {
+        tampilFeedback(false);
+    }
+});
+
+
+const inputs = ["nama","email","password"];
+for (let i = 0; i < inputs.length; i++) {
+    document.getElementById(inputs[i]).addEventListener("input", function() {
+        validasi();
+        tampilFeedback(false); 
+    });
+}
+
+
+document.getElementById("modeToggle").addEventListener("click", function() {
+    darkMode = !darkMode;
+    document.body.classList.toggle("dark", darkMode);
+});
+</script>
+
+</body>
+</html>
